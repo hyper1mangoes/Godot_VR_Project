@@ -11,8 +11,18 @@ config_version=5
 [application]
 
 config/name="Wall-Climbing-Project"
+run/main_scene="uid://baww6ub4as26l"
 config/features=PackedStringArray("4.6", "Mobile")
 config/icon="res://icon.svg"
+
+[autoload]
+
+XRToolsUserSettings="*uid://bqgb8i74tm0t"
+XRToolsRumbleManager="*uid://by853dk86g1qw"
+
+[editor_plugins]
+
+enabled=PackedStringArray("res://addons/godot-xr-tools/plugin.cfg", "res://addons/terrain_3d/plugin.cfg")
 
 [physics]
 
@@ -22,3 +32,9 @@ config/icon="res://icon.svg"
 
 rendering_device/driver.windows="d3d12"
 renderer/rendering_method="mobile"
+
+[xr]
+
+openxr/enabled=true
+openxr/foveation_dynamic=true
+openxr/startup_alert=false

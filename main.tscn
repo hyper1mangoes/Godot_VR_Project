@@ -1,0 +1,126 @@
+[gd_scene format=3 uid="uid://baww6ub4as26l"]
+
+[ext_resource type="PackedScene" uid="uid://b4kad2kuba1yn" path="res://addons/godot-xr-tools/hands/scenes/lowpoly/left_hand_low.tscn" id="1_h2yge"]
+[ext_resource type="PackedScene" uid="uid://l2n30mpbkdyw" path="res://addons/godot-xr-tools/hands/scenes/lowpoly/right_hand_low.tscn" id="2_1bvp3"]
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_7mycd"]
+size = Vector2(10, 10)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_272bh"]
+size = Vector3(10, 1, 10)
+
+[sub_resource type="Gradient" id="Gradient_0xm2m"]
+offsets = PackedFloat32Array(0.2, 1)
+colors = PackedColorArray(1, 1, 1, 1, 0, 0, 0, 1)
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_h2yge"]
+noise_type = 2
+frequency = 0.03
+cellular_jitter = 3.0
+cellular_return_type = 0
+domain_warp_enabled = true
+domain_warp_type = 1
+domain_warp_amplitude = 50.0
+domain_warp_fractal_type = 2
+domain_warp_fractal_lacunarity = 1.5
+domain_warp_fractal_gain = 1.0
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_1bvp3"]
+noise = SubResource("FastNoiseLite_h2yge")
+color_ramp = SubResource("Gradient_0xm2m")
+seamless = true
+
+[sub_resource type="Terrain3DMaterial" id="Terrain3DMaterial_lquwl"]
+_shader_parameters = {
+&"bias_distance": 512.0,
+&"blend_sharpness": 0.5,
+&"depth_blur": 0.0,
+&"enable_macro_variation": true,
+&"enable_projection": true,
+&"flat_terrain_normals": false,
+&"macro_variation1": Color(1, 1, 1, 1),
+&"macro_variation2": Color(1, 1, 1, 1),
+&"macro_variation_slope": 0.333,
+&"mipmap_bias": 1.0,
+&"noise1_angle": 0.0,
+&"noise1_offset": Vector2(0.5, 0.5),
+&"noise1_scale": 0.04,
+&"noise2_scale": 0.076,
+&"noise_texture": SubResource("NoiseTexture2D_1bvp3"),
+&"projection_threshold": 0.8
+}
+show_checkered = true
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_7mycd"]
+transparency = 4
+cull_mode = 2
+vertex_color_use_as_albedo = true
+backlight_enabled = true
+backlight = Color(0.5, 0.5, 0.5, 1)
+distance_fade_mode = 1
+distance_fade_min_distance = 128.0
+distance_fade_max_distance = 96.0
+
+[sub_resource type="Terrain3DMeshAsset" id="Terrain3DMeshAsset_272bh"]
+generated_type = 1
+height_offset = 0.5
+material_override = SubResource("StandardMaterial3D_7mycd")
+last_lod = 0
+last_shadow_lod = 0
+lod0_range = 128.0
+
+[sub_resource type="Terrain3DAssets" id="Terrain3DAssets_5vw27"]
+mesh_list = Array[Terrain3DMeshAsset]([SubResource("Terrain3DMeshAsset_272bh")])
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_5vw27"]
+
+[sub_resource type="Sky" id="Sky_kek77"]
+sky_material = SubResource("ProceduralSkyMaterial_5vw27")
+
+[sub_resource type="Environment" id="Environment_4c57u"]
+background_mode = 2
+sky = SubResource("Sky_kek77")
+
+[node name="Main" type="Node3D" unique_id=982325860]
+
+[node name="XROrigin3D" type="XROrigin3D" parent="." unique_id=1295080117]
+
+[node name="XRCamera3D" type="XRCamera3D" parent="XROrigin3D" unique_id=1570549071]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.8, -0.759)
+
+[node name="leftController" type="XRController3D" parent="XROrigin3D" unique_id=1832072779]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.5, 1, 0)
+tracker = &"left_hand"
+pose = &"aim"
+
+[node name="LeftHand" parent="XROrigin3D/leftController" unique_id=62510389 instance=ExtResource("1_h2yge")]
+
+[node name="rightController" type="XRController3D" parent="XROrigin3D" unique_id=667287789]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, 1, 0)
+tracker = &"right_hand"
+pose = &"aim"
+
+[node name="RightHand" parent="XROrigin3D/rightController" unique_id=2041279919 instance=ExtResource("2_1bvp3")]
+
+[node name="Ground" type="StaticBody3D" parent="." unique_id=2008857104]
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Ground" unique_id=251368351]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.01028502, 1.1557314, -0.7138338)
+mesh = SubResource("PlaneMesh_7mycd")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Ground/MeshInstance3D" unique_id=1223964122]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.128654, -0.4986459, -0.13265896)
+shape = SubResource("BoxShape3D_272bh")
+
+[node name="Terrain3D" type="Terrain3D" parent="Ground" unique_id=1408679534]
+material = SubResource("Terrain3DMaterial_lquwl")
+assets = SubResource("Terrain3DAssets_5vw27")
+show_checkered = true
+top_level = true
+metadata/_edit_lock_ = true
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=985589707]
+transform = Transform3D(0.71655774, 0.6975278, 0, -0.6975278, 0.71655774, 0, 0, 0, 1, 0.35398293, 9.784975, 1.1581459)
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=287693251]
+environment = SubResource("Environment_4c57u")
